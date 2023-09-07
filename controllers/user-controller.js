@@ -114,7 +114,25 @@ async function loginUser(req, res) {
   }
 }
 
+// @route - POST /api/v1/user/logout
+// @desc - Log out User
+// @access - Protected
+async function logoutUser(req, res) {
+  try {
+    return res.clearCookie("access_token").status(200).json({
+      success: true,
+      message: "Logged out successfully!",
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error,
+    })
+  }
+}
+
 module.exports = {
   createUser,
   loginUser,
+  logoutUser,
 }
