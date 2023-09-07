@@ -3,6 +3,7 @@ const dotenv = require("dotenv").config()
 const cors = require("cors")
 const app = express()
 const connectDB = require("./config/db")
+const cookieParser = require("cookie-parser")
 
 const { PORT } = process.env
 connectDB()
@@ -11,6 +12,7 @@ connectDB()
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser())
 
 app.get("/", (req, res) => {
   res.send("Hello World! ")
