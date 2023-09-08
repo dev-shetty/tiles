@@ -18,6 +18,8 @@ export default function Login() {
       headers: {
         "Content-Type": "application/json",
       },
+      // For accepting cookies
+      credentials: "include",
       body: JSON.stringify(details),
     })
 
