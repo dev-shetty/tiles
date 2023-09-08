@@ -26,6 +26,29 @@ export default function Canvas() {
     return data
   }
 
+  async function onTileClick(
+    event: MouseEvent,
+    canvas: HTMLCanvasElement,
+    ctx: CanvasRenderingContext2D,
+    pixelSize: number
+  ) {
+    const rect = canvas.getBoundingClientRect()
+
+    const _x = event.clientX - rect.left
+    const _y = event.clientY - rect.top
+
+    const box_x = Math.floor(_x / pixelSize)
+    const box_y = Math.floor(_y / pixelSize)
+
+    const data = await placeTile(box_x, box_y, color)
+    console.log(data)
+
+    if (data.success) {
+      ctx.fillStyle = color
+      ctx.fillRect(pixelSize * box_x, pixelSize * box_y, pixelSize, pixelSize)
+    }
+  }
+
   useEffect(() => {
     const canvas = canvasRef.current
     const ctx = canvas?.getContext("2d")
@@ -35,25 +58,14 @@ export default function Canvas() {
     const { width } = canvas.getBoundingClientRect()
     const pixelSize = width / ROWS
 
-    canvas?.addEventListener("click", async (event) => {
-      const rect = canvas.getBoundingClientRect()
-
-      const _x = event.clientX - rect.left
-      const _y = event.clientY - rect.top
-
-      const box_x = Math.floor(_x / pixelSize)
-      const box_y = Math.floor(_y / pixelSize)
-
-      const data = await placeTile(box_x, box_y, color)
-
-      if (data.success) {
-        ctx.fillStyle = color
-        ctx.fillRect(pixelSize * box_x, pixelSize * box_y, pixelSize, pixelSize)
-      }
-    })
+    canvas.addEventListener("click", async (event) =>
+      onTileClick(event, canvas, ctx, pixelSize)
+    )
 
     return () => {
-      canvas.removeEventListener("click", () => {})
+      canvas.removeEventListener("click", (event) =>
+        onTileClick(event, canvas, ctx, pixelSize)
+      )
     }
   }, [])
   return (
