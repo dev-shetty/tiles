@@ -30,11 +30,11 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div>
       <Link href="/register">
         <button
           onClick={placeTile}
-          className="mt-4 mx-auto bg-blue-500 text-white px-4 py-2 rounded-lg"
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg"
         >
           Register
         </button>

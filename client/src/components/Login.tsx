@@ -1,9 +1,10 @@
 "use client"
 
-import { FormEvent, useState } from "react"
+import { useRouter } from "next/navigation"
+import { FormEvent } from "react"
 
 export default function Login() {
-  const [user, setUser] = useState()
+  const router = useRouter()
 
   async function loginUser(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -25,7 +26,9 @@ export default function Login() {
 
     const data = await response.json()
     console.log(data)
-    if (data.success) setUser(data.user)
+    if (data.success) {
+      router.push("/")
+    }
   }
   return (
     <div>
