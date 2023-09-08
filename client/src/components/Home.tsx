@@ -4,6 +4,7 @@ import { FormEvent, useContext, useEffect } from "react"
 import socketIOClient from "socket.io-client"
 import Link from "next/link"
 import { userContext } from "@/provider/UserProvider"
+import Canvas from "@/components/Canvas"
 
 export default function Home() {
   const socket = socketIOClient("http://localhost:5000")
@@ -32,17 +33,5 @@ export default function Home() {
 
   const { user } = useContext(userContext)
 
-  return (
-    <div>
-      <Link href="/register">
-        <button
-          onClick={placeTile}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-        >
-          Register
-        </button>
-      </Link>
-      {user ? "User Logged in" : "User Not logged in"}
-    </div>
-  )
+  return <div>{user ? <Canvas /> : <p>Login to Continue</p>}</div>
 }
