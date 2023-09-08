@@ -2,10 +2,19 @@
 
 import { useEffect, useRef, useState } from "react"
 
+interface Tile {
+  x: number
+  y: number
+  color: string
+}
+
 export default function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const ROWS = 10
   const [color, setColor] = useState("#0ff")
+
+  // Keeping track of all the colored tiles
+  const [coloredTiles, setColoredTiles] = useState<Tile[]>([])
 
   async function placeTile(x: number, y: number, color: string) {
     const response = await fetch(
@@ -21,9 +30,40 @@ export default function Canvas() {
     )
 
     const data = await response.json()
-    console.log(data)
 
     return data
+  }
+
+  async function getAllTiles() {
+    const response = await fetch("http://localhost:5000/api/v1/tile/all", {
+      credentials: "include",
+    })
+    const data = await response.json()
+
+    const _tiles: Tile[] = []
+
+    data.tiles.map((tile: any) => {
+      const _tile = {
+        color: tile.color,
+        x: tile.x,
+        y: tile.y,
+      }
+
+      _tiles.push(_tile)
+    })
+
+    setColoredTiles(_tiles)
+  }
+
+  function createPixel(
+    ctx: CanvasRenderingContext2D,
+    pixelSize: number,
+    x: number,
+    y: number,
+    color: string
+  ) {
+    ctx.fillStyle = color
+    ctx.fillRect(pixelSize * x, pixelSize * y, pixelSize, pixelSize)
   }
 
   async function onTileClick(
@@ -41,15 +81,15 @@ export default function Canvas() {
     const box_y = Math.floor(_y / pixelSize)
 
     const data = await placeTile(box_x, box_y, color)
-    console.log(data)
 
     if (data.success) {
-      ctx.fillStyle = color
-      ctx.fillRect(pixelSize * box_x, pixelSize * box_y, pixelSize, pixelSize)
+      createPixel(ctx, pixelSize, box_x, box_y, color)
     }
   }
 
   useEffect(() => {
+    getAllTiles()
+
     const canvas = canvasRef.current
     const ctx = canvas?.getContext("2d")
 
@@ -68,6 +108,20 @@ export default function Canvas() {
       )
     }
   }, [])
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const ctx = canvas?.getContext("2d")
+
+    if (!ctx || !canvas) return
+    const { width } = canvas.getBoundingClientRect()
+    const pixelSize = width / ROWS
+
+    coloredTiles.forEach((tile) => {
+      createPixel(ctx, pixelSize, tile.x, tile.y, tile.color)
+    })
+  }, [coloredTiles])
+
   return (
     <canvas
       ref={canvasRef}

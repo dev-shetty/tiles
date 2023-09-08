@@ -53,6 +53,33 @@ async function placeTile(req, res) {
   }
 }
 
+// @route - GET /api/v1/tile/all
+// @desc - Get all the tiles
+// @access - Private
+
+async function getAllTiles(req, res) {
+  try {
+    const tiles = await Tile.find()
+    if (!tiles) {
+      return res.status(400).json({
+        success: false,
+        message: "Unable to get tiles. Please try again later!",
+      })
+    }
+
+    return res.status(200).json({
+      success: true,
+       tiles,
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error,
+    })
+  }
+}
+
 module.exports = {
   placeTile,
+  getAllTiles,
 }
