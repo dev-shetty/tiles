@@ -30,6 +30,11 @@ io.on("connection", (socket) => {
     io.emit("PLACE_TILE", data)
   })
 
+  socket.on("message", (message) => {
+    console.log(message)
+    io.emit("message", "Thanks for the message")
+  })
+
   socket.on("disconnect", () => {
     console.log("A user disconnected")
   })
