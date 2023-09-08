@@ -1,7 +1,8 @@
 "use client"
 
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useEffect } from "react"
 import socketIOClient from "socket.io-client"
+import Link from "next/link"
 
 export default function Home() {
   const socket = socketIOClient("http://localhost:5000")
@@ -30,26 +31,14 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      <form onSubmit={sendMessage}>
-        <input
-          type="text"
-          name="message"
-          className="border border-gray-400 rounded-lg p-2"
-        />
+      <Link href="/register">
         <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+          onClick={placeTile}
+          className="mt-4 mx-auto bg-blue-500 text-white px-4 py-2 rounded-lg"
         >
-          Submit
+          Register
         </button>
-      </form>
-
-      <button
-        onClick={placeTile}
-        className="mt-4 mx-auto bg-blue-500 text-white px-4 py-2 rounded-lg"
-      >
-        Place a tile
-      </button>
+      </Link>
     </div>
   )
 }
