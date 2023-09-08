@@ -42,8 +42,7 @@ export default function Home() {
           Register
         </button>
       </Link>
-
-      {user ? "Logged in" : "Not logged in"}
+      {user ? "User Logged in" : "User Not logged in"}
     </div>
   )
 }

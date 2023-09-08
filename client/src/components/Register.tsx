@@ -26,7 +26,6 @@ export default function Register() {
     })
 
     const data = await response.json()
-    console.log(data)
 
     // TODO: Error Handling
     if (data.success) router.push("/login")

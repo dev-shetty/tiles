@@ -1,10 +1,12 @@
 "use client"
 
+import { userContext } from "@/provider/UserProvider"
 import { useRouter } from "next/navigation"
-import { FormEvent } from "react"
+import { FormEvent, useContext } from "react"
 
 export default function Login() {
   const router = useRouter()
+  const { getUser } = useContext(userContext)
 
   async function loginUser(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -25,8 +27,8 @@ export default function Login() {
     })
 
     const data = await response.json()
-    console.log(data)
     if (data.success) {
+      getUser!()
       router.push("/")
     }
   }

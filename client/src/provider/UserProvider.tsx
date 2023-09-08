@@ -20,6 +20,7 @@ interface User {
 interface UserContextProps {
   user: User | null
   setUser: React.Dispatch<React.SetStateAction<User | null>>
+  getUser: () => Promise<void>
 }
 
 export const userContext = createContext<Partial<UserContextProps>>({})
@@ -32,7 +33,7 @@ export default function UserProvider({ children }: UserProviderProps) {
       credentials: "include",
     })
     const data = await response.json()
-    if (data.success) setUser(data)
+    if (data.success) setUser(data.user)
     if (data.error) setUser(null)
   }
 
@@ -41,7 +42,7 @@ export default function UserProvider({ children }: UserProviderProps) {
   }, [])
 
   return (
-    <userContext.Provider value={{ user, setUser }}>
+    <userContext.Provider value={{ user, setUser, getUser }}>
       {children}
     </userContext.Provider>
   )

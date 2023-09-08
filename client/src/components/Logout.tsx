@@ -1,13 +1,17 @@
 "use client"
 
+import { userContext } from "@/provider/UserProvider"
+import { useContext } from "react"
+
 export default function Logout() {
+  const { setUser } = useContext(userContext)
+
   async function logoutUser() {
     const response = await fetch("http://localhost:5000/api/v1/user/logout", {
-      method: "GET",
       credentials: "include",
     })
     const data = await response.json()
-    console.log(data)
+    if (data.success) setUser!(null)
   }
 
   return (
