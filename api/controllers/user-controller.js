@@ -131,8 +131,33 @@ async function logoutUser(req, res) {
   }
 }
 
+// @route - GET /api/v1/user/
+// @desc - Get User Details
+// @access - Protected
+async function getUser(req, res) {
+  try {
+    const user = req.user
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated!",
+      })
+    }
+    return res.status(200).json({
+      success: true,
+      user: user,
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error,
+    })
+  }
+}
+
 module.exports = {
   createUser,
   loginUser,
   logoutUser,
+  getUser,
 }

@@ -1,8 +1,9 @@
 "use client"
 
-import { FormEvent, useEffect } from "react"
+import { FormEvent, useContext, useEffect } from "react"
 import socketIOClient from "socket.io-client"
 import Link from "next/link"
+import { userContext } from "@/provider/UserProvider"
 
 export default function Home() {
   const socket = socketIOClient("http://localhost:5000")
@@ -29,6 +30,8 @@ export default function Home() {
     socket.emit("PLACE_TILE", { x: 0, y: 0, color: "#F0F" })
   }
 
+  const { user } = useContext(userContext)
+
   return (
     <div>
       <Link href="/register">
@@ -39,6 +42,8 @@ export default function Home() {
           Register
         </button>
       </Link>
+
+      {user ? "Logged in" : "Not logged in"}
     </div>
   )
 }
