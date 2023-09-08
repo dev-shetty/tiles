@@ -9,6 +9,8 @@ const { hashPassword, generateToken } = require("../lib/utils")
 async function createUser(req, res) {
   try {
     // Validating user response
+    console.log(req.body)
+
     createUserSchema.parse({
       body: req.body,
       query: req.query,

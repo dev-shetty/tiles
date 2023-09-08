@@ -24,8 +24,12 @@ export default function Home() {
     socket.emit("message", message)
   }
 
+  function placeTile() {
+    socket.emit("PLACE_TILE", { x: 0, y: 0, color: "#F0F" })
+  }
+
   return (
-    <div>
+    <div className="flex flex-col">
       <form onSubmit={sendMessage}>
         <input
           type="text"
@@ -39,6 +43,13 @@ export default function Home() {
           Submit
         </button>
       </form>
+
+      <button
+        onClick={placeTile}
+        className="mt-4 mx-auto bg-blue-500 text-white px-4 py-2 rounded-lg"
+      >
+        Place a tile
+      </button>
     </div>
   )
 }

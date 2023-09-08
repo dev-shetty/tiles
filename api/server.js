@@ -21,13 +21,15 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
 io.on("connection", (socket) => {
-  console.log("A user connected")
-  socket.on("PLACE_TILE", (data) => {
-    // Add mongo db code here
-    console.log(data)
+  socket.on("PLACE_TILE", async (data) => {
+    try {
+      // Add mongo db code here
 
-    // Broadcase the tile placement to other users
-    io.emit("PLACE_TILE", data)
+      console.log(data)
+
+      // Broadcase the tile placement to other users
+      io.emit("PLACE_TILE", data)
+    } catch (error) {}
   })
 
   socket.on("message", (message) => {
