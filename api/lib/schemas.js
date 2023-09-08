@@ -16,11 +16,11 @@ const loginUserSchema = z.object({
 })
 
 const tileSchema = z.object({
-  body: {
+  body: z.object({
     x: z.number(),
     y: z.number(),
     color: z.string(),
-  },
+  }),
 })
 
 module.exports = {

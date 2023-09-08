@@ -25,27 +25,27 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-io.on("connection", (socket) => {
-  socket.on("PLACE_TILE", async (data) => {
-    try {
-      // Add mongo db code here
+// io.on("connection", (socket) => {
+//   socket.on("PLACE_TILE", async (data) => {
+//     try {
+//       // Add mongo db code here
 
-      console.log(data)
+//       console.log(data)
 
-      // Broadcase the tile placement to other users
-      io.emit("PLACE_TILE", data)
-    } catch (error) {}
-  })
+//       // Broadcase the tile placement to other users
+//       io.emit("PLACE_TILE", data)
+//     } catch (error) {}
+//   })
 
-  socket.on("message", (message) => {
-    console.log(message)
-    io.emit("message", "Thanks for the message")
-  })
+//   socket.on("message", (message) => {
+//     console.log(message)
+//     io.emit("message", "Thanks for the message")
+//   })
 
-  socket.on("disconnect", () => {
-    console.log("A user disconnected")
-  })
-})
+//   socket.on("disconnect", () => {
+//     console.log("A user disconnected")
+//   })
+// })
 
 app.get("/", (req, res) => {
   res.send("Hello World! ")

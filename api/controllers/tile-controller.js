@@ -9,6 +9,7 @@ async function placeTile(req, res) {
     tileSchema.parse({
       body: req.body,
       query: req.query,
+      params: req.params,
     })
 
     const tile = await Tile.create({
@@ -34,7 +35,12 @@ async function placeTile(req, res) {
         user: tile.user,
       },
     })
-  } catch (error) {}
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error,
+    })
+  }
 }
 
 module.exports = {
