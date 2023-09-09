@@ -5,9 +5,16 @@ import socketIOClient from "socket.io-client"
 import Link from "next/link"
 import { userContext } from "@/provider/UserProvider"
 import Canvas from "@/components/Canvas"
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies"
 
-export default function Home() {
-  const socket = socketIOClient("http://localhost:5000")
+interface HomeProps {
+  token: RequestCookie | undefined
+}
+
+export default function Home({ token }: HomeProps) {
+  const socket = socketIOClient("http://localhost:5000", {
+    query: { access_token: token?.value },
+  })
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -19,11 +26,7 @@ export default function Home() {
     })
   }, [])
 
-  function sendMessage(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const message = formData.get("message")
-
+  function sendMessage(message: string) {
     socket.emit("message", message)
   }
 
@@ -33,5 +36,20 @@ export default function Home() {
 
   const { user } = useContext(userContext)
 
-  return <div>{user ? <Canvas /> : <p>Login to Continue</p>}</div>
+  return (
+    <div>
+      {user ? (
+        <div>
+          <Canvas />
+          <button
+            onClick={() => sendMessage("Hello from Client, this is Deveesh")}
+          >
+            Send a message!
+          </button>
+        </div>
+      ) : (
+        <p>Login to Continue</p>
+      )}
+    </div>
+  )
 }

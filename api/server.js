@@ -2,10 +2,12 @@ const express = require("express")
 const dotenv = require("dotenv").config()
 const cors = require("cors")
 const http = require("http")
+const jwt = require("jsonwebtoken")
 const cookieParser = require("cookie-parser")
 const { Server } = require("socket.io")
 
 const connectDB = require("./config/db")
+const authenticate = require("./middlewares/authenticate")
 
 const { PORT } = process.env
 const app = express()
@@ -25,27 +27,29 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-// io.on("connection", (socket) => {
-//   socket.on("PLACE_TILE", async (data) => {
-//     try {
-//       // Add mongo db code here
+io.use((socket, next) => {
+  if (socket.handshake.query.access_token !== undefined) {
+    const access_token = socket.handshake.query.access_token
 
-//       console.log(data)
+    jwt.verify(access_token, process.env.JWT_SECRET, (err, decoded) => {
+      socket.decoded = decoded
+      next()
+    })
+  } else {
+    return next(new Error("Authentication error"))
+  }
+}).on("connection", (socket) => {
+  console.log("User connected")
 
-//       // Broadcase the tile placement to other users
-//       io.emit("PLACE_TILE", data)
-//     } catch (error) {}
-//   })
+  socket.on("message", (message) => {
+    console.log(message)
+    io.emit("message", "Hello from server!")
+  })
 
-//   socket.on("message", (message) => {
-//     console.log(message)
-//     io.emit("message", "Thanks for the message")
-//   })
-
-//   socket.on("disconnect", () => {
-//     console.log("A user disconnected")
-//   })
-// })
+  socket.on("disconnect", () => {
+    console.log("User disconnected")
+  })
+})
 
 app.get("/", (req, res) => {
   res.send("Hello World! ")
