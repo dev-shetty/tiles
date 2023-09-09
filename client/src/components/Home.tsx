@@ -45,11 +45,6 @@ export default function Home() {
       {user ? (
         <div>
           <Canvas socket={socket} />
-          <button
-            onClick={() => sendMessage("Hello from Client, this is Deveesh")}
-          >
-            Send a message!
-          </button>
         </div>
       ) : (
         <p>Login to Continue</p>
