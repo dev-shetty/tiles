@@ -44,7 +44,7 @@ export default function Home() {
     <div>
       {user ? (
         <div>
-          <Canvas />
+          <Canvas socket={socket} />
           <button
             onClick={() => sendMessage("Hello from Client, this is Deveesh")}
           >
