@@ -16,10 +16,12 @@ interface Tile {
 
 export default function Canvas({ socket }: CanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+
   const ROWS = 10
   const CANVAS_SIZE = 720
   const colorsList = ["#f00", "#0f0", "#00f", "#ff0", "#0ff", "#f0f"]
   const [color, setColor] = useState(colorsList[0])
+  const [pixelSize] = useState(CANVAS_SIZE / ROWS)
 
   // Keeping track of all the colored tiles
   const [coloredTiles, setColoredTiles] = useState<Tile[]>([])
@@ -66,27 +68,20 @@ export default function Canvas({ socket }: CanvasProps) {
     setColoredTiles(_tiles)
   }
 
-  const createPixel = useCallback(
-    (
-      ctx: CanvasRenderingContext2D,
-      pixelSize: number,
-      x: number,
-      y: number,
-      clr?: string
-    ) => {
-      console.log("Inside create pixel - clr: " + clr + " color: " + color)
-
-      ctx.fillStyle = clr ?? color
-      ctx.fillRect(pixelSize * x, pixelSize * y, pixelSize, pixelSize)
-    },
-    [color]
-  )
+  function createPixel(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    clr?: string
+  ) {
+    ctx.fillStyle = clr ?? color
+    ctx.fillRect(pixelSize * x, pixelSize * y, pixelSize, pixelSize)
+  }
 
   async function onTileClick(
     event: MouseEvent,
     canvas: HTMLCanvasElement,
-    ctx: CanvasRenderingContext2D,
-    pixelSize: number
+    ctx: CanvasRenderingContext2D
   ) {
     const rect = canvas.getBoundingClientRect()
 
@@ -99,7 +94,7 @@ export default function Canvas({ socket }: CanvasProps) {
     const data = await placeTile(box_x, box_y)
 
     if (data.success) {
-      createPixel(ctx, pixelSize, box_x, box_y)
+      createPixel(ctx, box_x, box_y)
       socket?.emit("PLACE_TILE", { x: box_x, y: box_y, color })
     }
   }
@@ -116,7 +111,7 @@ export default function Canvas({ socket }: CanvasProps) {
     const pixelSize = width / ROWS
 
     canvas.addEventListener("click", async (event) =>
-      onTileClick(event, canvas, ctx, pixelSize)
+      onTileClick(event, canvas, ctx)
     )
 
     socket?.on("PLACE_TILE", (tile: Tile) => {
@@ -125,7 +120,7 @@ export default function Canvas({ socket }: CanvasProps) {
 
     return () => {
       canvas.removeEventListener("click", (event) =>
-        onTileClick(event, canvas, ctx, pixelSize)
+        onTileClick(event, canvas, ctx)
       )
     }
   }, [])
@@ -135,11 +130,9 @@ export default function Canvas({ socket }: CanvasProps) {
     const ctx = canvas?.getContext("2d")
 
     if (!ctx || !canvas) return
-    const { width } = canvas.getBoundingClientRect()
-    const pixelSize = width / ROWS
 
     coloredTiles.forEach((tile) => {
-      createPixel(ctx, pixelSize, tile.x, tile.y, tile.color)
+      createPixel(ctx, tile.x, tile.y, tile.color)
     })
   }, [coloredTiles])
 
