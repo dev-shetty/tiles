@@ -2,7 +2,17 @@ const jwt = require("jsonwebtoken")
 const User = require("../models/user-model")
 
 async function authenticate(req, res, next) {
-  token = req.cookies.access_token
+  const tokenHeader = req.header("Authorization")
+
+  if (!tokenHeader || !tokenHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      success: false,
+      message:
+        "Please include a valid Bearer token in the Authorization header",
+    })
+  }
+
+  token = tokenHeader.split(" ")[1]
   if (!token) {
     return res.status(401).json({
       success: false,

@@ -21,13 +21,12 @@ export default function Login() {
       headers: {
         "Content-Type": "application/json",
       },
-      // For accepting cookies
-      credentials: "include",
       body: JSON.stringify(details),
     })
 
     const data = await response.json()
     if (data.success) {
+      sessionStorage.setItem("access_token", data.access_token)
       getUser!()
       router.push("/")
     }

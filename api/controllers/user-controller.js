@@ -84,21 +84,16 @@ async function loginUser(req, res) {
         email: user.email,
       })
 
-      return res
-        .cookie("access_token", token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-        })
-        .status(200)
-        .json({
-          success: true,
-          message: "User successfully logged in!",
-          user: {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-          },
-        })
+      return res.status(200).json({
+        success: true,
+        message: "User successfully logged in!",
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        },
+        access_token: token,
+      })
     }
 
     // If password doesn't match
@@ -118,17 +113,17 @@ async function loginUser(req, res) {
 // @desc - Log out User
 // @access - Protected
 async function logoutUser(req, res) {
-  try {
-    return res.clearCookie("access_token").status(200).json({
-      success: true,
-      message: "Logged out successfully!",
-    })
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      error: error,
-    })
-  }
+  // try {
+  //   return res.clearCookie("access_token").status(200).json({
+  //     success: true,
+  //     message: "Logged out successfully!",
+  //   })
+  // } catch (error) {
+  //   return res.status(500).json({
+  //     success: false,
+  //     error: error,
+  //   })
+  // }
 }
 
 // @route - GET /api/v1/user/

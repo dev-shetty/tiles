@@ -15,6 +15,7 @@ export default function Canvas() {
 
   // Keeping track of all the colored tiles
   const [coloredTiles, setColoredTiles] = useState<Tile[]>([])
+  const token = sessionStorage.getItem("access_token")
 
   async function placeTile(x: number, y: number, color: string) {
     const response = await fetch(
@@ -23,8 +24,8 @@ export default function Canvas() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        credentials: "include",
         body: JSON.stringify({ x, y, color }),
       }
     )
@@ -36,7 +37,9 @@ export default function Canvas() {
 
   async function getAllTiles() {
     const response = await fetch("http://localhost:5000/api/v1/tile/all", {
-      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
     const data = await response.json()
 

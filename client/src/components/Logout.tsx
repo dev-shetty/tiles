@@ -7,11 +7,13 @@ export default function Logout() {
   const { setUser } = useContext(userContext)
 
   async function logoutUser() {
-    const response = await fetch("http://localhost:5000/api/v1/user/logout", {
-      credentials: "include",
-    })
-    const data = await response.json()
-    if (data.success) setUser!(null)
+    // const response = await fetch("http://localhost:5000/api/v1/user/logout", {
+    //   credentials: "include",
+    // })
+    // const data = await response.json()
+    // if (data.success) setUser!(null)
+    sessionStorage.removeItem("access_token")
+    setUser!(null)
   }
 
   return (
