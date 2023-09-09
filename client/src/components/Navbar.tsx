@@ -15,7 +15,10 @@ export default function Navbar() {
         <div>
           {user ? (
             // TODO: Make it button reusable component and extract out the login
-            <Logout />
+            <div className="flex gap-2 items-center">
+              <p>{user.name}</p>
+              <Logout />
+            </div>
           ) : (
             <Link
               href="/login"

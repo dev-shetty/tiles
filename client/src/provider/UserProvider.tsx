@@ -9,7 +9,7 @@ interface UserProviderProps {
 
 interface User {
   _id: string
-  username: string
+  name: string
   email: string
   isUserOnCountdown: boolean
   createdAt: string
