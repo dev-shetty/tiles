@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser")
 const { Server } = require("socket.io")
 
 const connectDB = require("./config/db")
-const authenticate = require("./middlewares/authenticate")
+const User = require("./models/user-model")
 
 const { PORT } = process.env
 const app = express()
@@ -27,16 +27,22 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-io.use((socket, next) => {
-  if (socket.handshake.query.access_token !== undefined) {
-    const access_token = socket.handshake.query.access_token
+io.use(async (socket, next) => {
+  try {
+    const { access_token } = socket.handshake.query
+    if (access_token) {
+      const decodedToken = jwt.verify(access_token, process.env.JWT_SECRET)
+      const user = await User.findById(decodedToken.user.id).select("-password")
 
-    jwt.verify(access_token, process.env.JWT_SECRET, (err, decoded) => {
-      socket.decoded = decoded
-      next()
-    })
-  } else {
-    return next(new Error("Authentication error"))
+      if (user) {
+        socket.userId = user._id
+        return next()
+      }
+    } else {
+      return next(new Error("Authentication error"))
+    }
+  } catch (error) {
+    console.log("JWT verification error:", error.message)
   }
 }).on("connection", (socket) => {
   console.log("User connected")
