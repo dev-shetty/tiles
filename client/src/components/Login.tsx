@@ -27,7 +27,9 @@ export default function Login() {
     const data = await response.json()
     if (data.success) {
       sessionStorage.setItem("access_token", data.access_token)
-      getUser!()
+
+      // Passing it as parameter because the entry to session storage takes time and a null token is read instead
+      getUser!(data.access_token)
       router.push("/")
     }
   }
