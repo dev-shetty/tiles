@@ -4,20 +4,15 @@ import { useContext, useEffect, useState } from "react"
 import socketIOClient, { Socket } from "socket.io-client"
 import { userContext } from "@/provider/UserProvider"
 import Canvas from "@/components/Canvas"
-import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies"
 
-interface HomeProps {
-  token: RequestCookie | null
-}
-
-export default function Home({ token }: HomeProps) {
-  const [accessToken, setAccessToken] = useState<RequestCookie | null>(token)
+export default function Home() {
+  const accessToken = sessionStorage.getItem("access_token")
   const [socket, setSocket] = useState<Socket | null>(null)
 
   useEffect(() => {
     const socketClient = socketIOClient("http://localhost:5000", {
       query: {
-        access_token: accessToken ? accessToken.value : "",
+        access_token: accessToken ? accessToken : "",
       },
     })
 
