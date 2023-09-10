@@ -6,6 +6,7 @@ import { Socket } from "socket.io-client"
 
 interface CanvasProps {
   socket: Socket | null
+  color: string
 }
 
 interface Tile {
@@ -14,20 +15,25 @@ interface Tile {
   color: string
 }
 
-export default function Canvas({ socket }: CanvasProps) {
+export default function Canvas({ socket, color }: CanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const ROWS = 10
   const CANVAS_SIZE = 720
-  const colorsList = ["#f00", "#0f0", "#00f", "#ff0", "#0ff", "#f0f"]
-  const [color, setColor] = useState(colorsList[0])
+
   const [pixelSize] = useState(CANVAS_SIZE / ROWS)
 
   // Keeping track of all the colored tiles
   const [coloredTiles, setColoredTiles] = useState<Tile[]>([])
   const token = sessionStorage.getItem("access_token")
 
-  async function placeTile(x: number, y: number) {
+  async function placeTile(
+    x: number,
+    y: number,
+    ctx: CanvasRenderingContext2D
+  ) {
+    console.log("Inside Place Tile: " + color)
+
     const response = await fetch(
       "http://localhost:5000/api/v1/tile/place-tile",
       {
@@ -42,7 +48,12 @@ export default function Canvas({ socket }: CanvasProps) {
 
     const data = await response.json()
 
-    return data
+    if (data.success) {
+      createPixel(ctx, x, y)
+      socket?.emit("PLACE_TILE", { x, y, color })
+    }
+
+    console.log("--------------------")
   }
 
   async function getAllTiles() {
@@ -68,7 +79,7 @@ export default function Canvas({ socket }: CanvasProps) {
     setColoredTiles(_tiles)
   }
 
-  function createPixel(
+  async function createPixel(
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number,
@@ -83,6 +94,8 @@ export default function Canvas({ socket }: CanvasProps) {
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D
   ) {
+    console.log("Inside OnTileClick: " + color)
+
     const rect = canvas.getBoundingClientRect()
 
     const _x = event.clientX - rect.left
@@ -91,31 +104,29 @@ export default function Canvas({ socket }: CanvasProps) {
     const box_x = Math.floor(_x / pixelSize)
     const box_y = Math.floor(_y / pixelSize)
 
-    const data = await placeTile(box_x, box_y)
-
-    if (data.success) {
-      createPixel(ctx, box_x, box_y)
-      socket?.emit("PLACE_TILE", { x: box_x, y: box_y, color })
-    }
+    placeTile(box_x, box_y, ctx)
   }
+  console.log("Root: " + color)
 
   useEffect(() => {
     getAllTiles()
+
+    socket?.on("PLACE_TILE", (tile: Tile) => {
+      setColoredTiles((prev) => [...prev, tile])
+    })
+  }, [])
+
+  useEffect(() => {
+    console.log("Inside Effect: " + color)
 
     const canvas = canvasRef.current
     const ctx = canvas?.getContext("2d")
 
     if (!ctx || !canvas) return
 
-    const { width } = canvas.getBoundingClientRect()
-    const pixelSize = width / ROWS
-
-    canvas.addEventListener("click", async (event) =>
+    canvas.addEventListener("click", (event) => {
+      console.log("Inside Click event: " + color)
       onTileClick(event, canvas, ctx)
-    )
-
-    socket?.on("PLACE_TILE", (tile: Tile) => {
-      setColoredTiles((prev) => [...prev, tile])
     })
 
     return () => {
@@ -123,7 +134,7 @@ export default function Canvas({ socket }: CanvasProps) {
         onTileClick(event, canvas, ctx)
       )
     }
-  }, [])
+  }, [color])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -137,14 +148,13 @@ export default function Canvas({ socket }: CanvasProps) {
   }, [coloredTiles])
 
   return (
-    <div>
+    <div className="p-8">
       <canvas
         ref={canvasRef}
         width={CANVAS_SIZE}
         height={CANVAS_SIZE}
         className="border cursor-pointer"
       ></canvas>
-      <ColorPalette color={color} setColor={setColor} colorsList={colorsList} />
     </div>
   )
 }

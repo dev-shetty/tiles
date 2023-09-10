@@ -1,13 +1,11 @@
 import { Dispatch, SetStateAction } from "react"
 
 interface ColorPaletteProps {
-  color: string
   setColor: Dispatch<SetStateAction<string>>
   colorsList: string[]
 }
 
 export default function ColorPalette({
-  color,
   setColor,
   colorsList,
 }: ColorPaletteProps) {
