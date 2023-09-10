@@ -1,6 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react"
 import { createContext } from "react"
 
 interface UserProviderProps {
@@ -19,11 +25,11 @@ interface User {
 
 interface UserContextProps {
   user: User | null
-  setUser: React.Dispatch<React.SetStateAction<User | null>>
+  setUser: Dispatch<SetStateAction<User | null>>
   getUser: (access_token?: string) => Promise<void>
 }
 
-export const userContext = createContext<Partial<UserContextProps>>({})
+const userContext = createContext<UserContextProps | null>(null)
 
 export default function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<User | null>(null)
@@ -50,4 +56,14 @@ export default function UserProvider({ children }: UserProviderProps) {
       {children}
     </userContext.Provider>
   )
+}
+
+export function useUser() {
+  const context = useContext(userContext)
+
+  if (!context) {
+    throw new Error("useUser must be used within a UserProvider")
+  }
+
+  return context
 }

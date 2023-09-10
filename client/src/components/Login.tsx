@@ -1,12 +1,12 @@
 "use client"
 
-import { userContext } from "@/provider/UserProvider"
+import { useUser } from "@/provider/UserProvider"
 import { useRouter } from "next/navigation"
-import { FormEvent, useContext } from "react"
+import { FormEvent } from "react"
 
 export default function Login() {
   const router = useRouter()
-  const { getUser } = useContext(userContext)
+  const { getUser } = useUser()
 
   async function loginUser(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()

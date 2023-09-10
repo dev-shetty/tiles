@@ -1,13 +1,11 @@
 "use client"
 
-import Login from "@/components/Login"
 import Logout from "@/components/Logout"
-import { userContext } from "@/provider/UserProvider"
+import { useUser } from "@/provider/UserProvider"
 import Link from "next/link"
-import { useContext } from "react"
 
 export default function Navbar() {
-  const { user } = useContext(userContext)
+  const { user } = useUser()
   return (
     <nav>
       <div className="absolute w-full flex justify-between px-4 py-4">

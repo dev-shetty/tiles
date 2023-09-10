@@ -2,7 +2,7 @@
 
 import { useContext, useEffect, useState } from "react"
 import socketIOClient, { Socket } from "socket.io-client"
-import { userContext } from "@/provider/UserProvider"
+import { useUser } from "@/provider/UserProvider"
 import Canvas from "@/components/Canvas"
 
 export default function Home() {
@@ -30,15 +30,7 @@ export default function Home() {
     }
   }, [])
 
-  function sendMessage(message: string) {
-    socket?.emit("message", message)
-  }
-
-  function placeTile() {
-    socket?.emit("PLACE_TILE", { x: 0, y: 0, color: "#F0F" })
-  }
-
-  const { user } = useContext(userContext)
+  const { user } = useUser()
 
   return (
     <div>
