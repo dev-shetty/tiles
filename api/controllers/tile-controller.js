@@ -97,7 +97,34 @@ async function getAllTiles(req, res) {
   }
 }
 
+// @route - GET /api/v1/tile?x=&y=
+// @desc - Get a tile by ID
+// @access - Private
+async function getTile(req, res) {
+  try {
+    const { x, y } = req.query
+    const tile = await Tile.findOne({ x, y })
+    if (!tile) {
+      return res.status(400).json({
+        success: false,
+        message: "Tile not placed yet!",
+      })
+    }
+
+    return res.status(200).json({
+      success: true,
+      tile,
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error,
+    })
+  }
+}
+
 module.exports = {
   placeTile,
   getAllTiles,
+  getTile,
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import socketIOClient, { Socket } from "socket.io-client"
 import { useUser } from "@/provider/UserProvider"
 import Canvas from "@/components/Canvas"
