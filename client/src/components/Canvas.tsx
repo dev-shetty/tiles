@@ -1,7 +1,6 @@
 "use client"
 
-import ColorPalette from "@/components/ColorPalette"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Socket } from "socket.io-client"
 
 interface CanvasProps {
@@ -20,7 +19,6 @@ export default function Canvas({ socket, color }: CanvasProps) {
 
   const ROWS = 10
   const CANVAS_SIZE = 720
-
   const [pixelSize] = useState(CANVAS_SIZE / ROWS)
 
   // Keeping track of all the colored tiles
@@ -28,8 +26,6 @@ export default function Canvas({ socket, color }: CanvasProps) {
   const token = sessionStorage.getItem("access_token")
 
   async function placeTile(x: number, y: number) {
-    console.log("Inside Place Tile: " + color)
-
     const response = await fetch(
       "http://localhost:5000/api/v1/tile/place-tile",
       {
@@ -45,11 +41,8 @@ export default function Canvas({ socket, color }: CanvasProps) {
     const data = await response.json()
 
     if (data.success) {
-      // createPixel(ctx, x, y)
       socket?.emit("PLACE_TILE", { x, y, color })
     }
-
-    console.log("--------------------")
   }
 
   async function getAllTiles() {
@@ -86,8 +79,6 @@ export default function Canvas({ socket, color }: CanvasProps) {
   }
 
   function onTileClick(event: MouseEvent, canvas: HTMLCanvasElement) {
-    console.log("Inside OnTileClick: " + color)
-
     const rect = canvas.getBoundingClientRect()
 
     const _x = event.clientX - rect.left
@@ -99,8 +90,6 @@ export default function Canvas({ socket, color }: CanvasProps) {
     placeTile(box_x, box_y)
   }
 
-  console.log("Root: " + color)
-
   useEffect(() => {
     getAllTiles()
 
@@ -110,19 +99,17 @@ export default function Canvas({ socket, color }: CanvasProps) {
   }, [])
 
   useEffect(() => {
-    console.log("Inside Effect: " + color)
-
     const canvas = canvasRef.current
 
     if (!canvas) return
 
-    canvas.addEventListener("click", (event) => {
-      console.log("Inside Click event: " + color)
+    const handleCanvasClick = async (event: MouseEvent) => {
       onTileClick(event, canvas)
-    })
+    }
 
+    canvas.addEventListener("click", handleCanvasClick)
     return () => {
-      canvas.removeEventListener("click", (event) => onTileClick(event, canvas))
+      canvas.removeEventListener("click", handleCanvasClick)
     }
   }, [color])
 
