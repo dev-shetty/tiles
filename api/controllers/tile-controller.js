@@ -12,17 +12,32 @@ async function placeTile(req, res) {
       params: req.params,
     })
 
-    // No need I guess, because when multiple users collaborate there shld be overwriting
-    // TODO: If tile already exist then just update it
+    const isTilePresent = await Tile.findOne({ x: req.body.x, y: req.body.y })
+    if (isTilePresent) {
+      // Update the tile with new user and color
+      const updatedTile = await Tile.findOneAndUpdate(
+        { x: req.body.x, y: req.body.y },
+        { color: req.body.color, user: req.user._id },
+        { new: true }
+      )
 
-    // const isTilePresent = await Tile.findOne({ x: req.body.x, y: req.body.y })
-    // if (isTilePresent) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     message: "Tile is already colored by another user!",
-    //   })
+      if (!updatedTile) {
+        return res.status(400).json({
+          success: false,
+          message: "Unable to place tile. Please try again later!",
+        })
+      }
 
-    // }
+      return res.status(200).json({
+        success: true,
+        message: "Tile placed successfully!",
+        tile: {
+          id: updatedTile._id,
+          color: updatedTile.color,
+          user: updatedTile.user,
+        },
+      })
+    }
     console.log(req.user)
 
     const tile = await Tile.create({
