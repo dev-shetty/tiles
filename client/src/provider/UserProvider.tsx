@@ -33,12 +33,11 @@ const userContext = createContext<UserContextProps | null>(null)
 
 export default function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<User | null>(null)
-  const token = sessionStorage.getItem("access_token")
 
   async function getUser(access_token?: string) {
     const response = await fetch("http://localhost:5000/api/v1/user", {
       headers: {
-        Authorization: `Bearer ${access_token ?? token}`,
+        Authorization: `Bearer ${access_token}`,
       },
     })
     const data = await response.json()
@@ -48,7 +47,8 @@ export default function UserProvider({ children }: UserProviderProps) {
   }
 
   useEffect(() => {
-    getUser()
+    const token = sessionStorage.getItem("access_token")
+    getUser(token!)
   }, [])
 
   return (

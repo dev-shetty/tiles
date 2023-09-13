@@ -7,13 +7,13 @@ import Canvas from "@/components/Canvas"
 import ColorPalette from "@/components/ColorPalette"
 
 export default function Home() {
-  const accessToken = sessionStorage.getItem("access_token")
   const [socket, setSocket] = useState<Socket | null>(null)
 
   const colorsList = ["#f00", "#0f0", "#00f", "#ff0", "#0ff", "#f0f"]
   const [color, setColor] = useState(colorsList[0])
 
   useEffect(() => {
+    const accessToken = sessionStorage.getItem("access_token")
     const socketClient = socketIOClient("http://localhost:5000", {
       query: {
         access_token: accessToken ? accessToken : "",
