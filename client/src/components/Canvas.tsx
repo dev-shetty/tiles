@@ -125,7 +125,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
   }, [coloredTiles])
 
   return (
-    <div className="p-8">
+    <div>
       <canvas
         ref={canvasRef}
         width={CANVAS_SIZE}

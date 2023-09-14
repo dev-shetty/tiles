@@ -8,7 +8,7 @@ export default function Navbar() {
   const { user } = useUser()
   return (
     <nav>
-      <div className="absolute w-full flex justify-between px-4 py-4">
+      <div className="absolute w-full flex justify-between items-center px-4 py-4">
         <p>Tiles</p>
         <div>
           {user ? (
