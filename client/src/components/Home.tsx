@@ -9,7 +9,17 @@ import ColorPalette from "@/components/ColorPalette"
 export default function Home() {
   const [socket, setSocket] = useState<Socket | null>(null)
 
-  const colorsList = ["#f00", "#0f0", "#00f", "#ff0", "#0ff", "#f0f"]
+  const colorsList = [
+    "#FF5733",
+    "#FFC300",
+    "#33FF57",
+    "#3357FF",
+    "#FF33EC",
+    "#FF33A1",
+    "#33FFEC",
+    "#33A1FF",
+  ]
+
   const [color, setColor] = useState(colorsList[0])
 
   useEffect(() => {
