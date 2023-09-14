@@ -6,11 +6,6 @@ export default function Logout() {
   const { setUser } = useUser()
 
   async function logoutUser() {
-    // const response = await fetch("http://localhost:5000/api/v1/user/logout", {
-    //   credentials: "include",
-    // })
-    // const data = await response.json()
-    // if (data.success) setUser!(null)
     sessionStorage.removeItem("access_token")
     setUser!(null)
   }
@@ -18,7 +13,7 @@ export default function Logout() {
   return (
     <div>
       <button
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+        className="flex w-full justify-center rounded-md bg-indigo-600 px-4 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         onClick={logoutUser}
       >
         Logout

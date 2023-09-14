@@ -9,7 +9,9 @@ export default function Navbar() {
   return (
     <nav>
       <div className="absolute w-full flex justify-between items-center px-4 py-4">
-        <Link href="/">Tiles</Link>
+        <Link href="/" className="text-xl font-bold tracking-wider">
+          Tiles
+        </Link>
         <div>
           {user ? (
             <div className="flex gap-2 items-center">
@@ -19,7 +21,7 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="px-4 py-2 bg-blue-500 rounded-md text-white"
+              className="flex w-full justify-center rounded-md bg-indigo-600 px-4 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Login
             </Link>
