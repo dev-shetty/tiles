@@ -3,11 +3,30 @@
 import { useUser } from "@/provider/UserProvider"
 
 export default function Logout() {
-  const { setUser } = useUser()
+  const { user, setUser } = useUser()
 
   async function logoutUser() {
-    sessionStorage.removeItem("access_token")
-    setUser!(null)
+    if (user?.name.startsWith("Guest")) {
+      const response = await fetch(
+        `http://localhost:5000/api/v1/user/${user._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("access_token")}`,
+          },
+        }
+      )
+
+      const data = await response.json()
+      if (data.success) {
+        sessionStorage.removeItem("access_token")
+        setUser!(null)
+      }
+    } else {
+      sessionStorage.removeItem("access_token")
+      setUser!(null)
+    }
   }
 
   return (

@@ -147,15 +147,11 @@ async function loginAsGuest(req, res) {
 
     const hashedPassword = await hashPassword(randomNumber.toString())
 
-    console.log("Hihsdioasnd")
-
     const user = await User.create({
       name: `Guest${randomNumber}`,
       email: `guest${randomNumber}@tiles.com`,
       password: hashedPassword,
     })
-
-    console.log(user)
 
     if (!user) {
       return res.status(400).json({
@@ -188,9 +184,34 @@ async function loginAsGuest(req, res) {
   }
 }
 
+// @route - DELETE /api/v1/user/:id
+// @desc - Get User Details
+// @access - Protected
+async function deleteUser(req, res) {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id)
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not deleted!",
+      })
+    }
+    return res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error,
+    })
+  }
+}
+
 module.exports = {
   createUser,
   loginUser,
   getUser,
   loginAsGuest,
+  deleteUser,
 }
