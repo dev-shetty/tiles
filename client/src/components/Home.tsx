@@ -49,9 +49,13 @@ export default function Home() {
   return (
     <div>
       {user ? (
-        <div>
+        <div className="flex flex-col gap-2">
+          <ColorPalette
+            setColor={setColor}
+            colorsList={colorsList}
+            color={color}
+          />
           <Canvas socket={socket} color={color} />
-          <ColorPalette setColor={setColor} colorsList={colorsList} />
         </div>
       ) : (
         <p>Login to Continue</p>

@@ -9,7 +9,7 @@ export default function Navbar() {
   return (
     <nav>
       <div className="absolute w-full flex justify-between items-center px-4 py-4">
-        <p>Tiles</p>
+        <Link href="/">Tiles</Link>
         <div>
           {user ? (
             <div className="flex gap-2 items-center">

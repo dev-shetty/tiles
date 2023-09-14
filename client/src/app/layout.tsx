@@ -18,11 +18,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-slate-50`}>
         <UserProvider>
           <Navbar />
-          {children}
-          </UserProvider>
+          <main className="container mx-auto min-h-screen flex items-center justify-center">
+            {children}
+          </main>
+        </UserProvider>
       </body>
     </html>
   )

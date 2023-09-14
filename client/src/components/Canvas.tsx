@@ -130,7 +130,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
         ref={canvasRef}
         width={CANVAS_SIZE}
         height={CANVAS_SIZE}
-        className="border cursor-pointer"
+        className="border-2 cursor-pointer"
       ></canvas>
     </div>
   )
