@@ -12,7 +12,6 @@ export default function Navbar() {
         <p>Tiles</p>
         <div>
           {user ? (
-            // TODO: Make it button reusable component and extract out the login
             <div className="flex gap-2 items-center">
               <p>{user.name}</p>
               <Logout />

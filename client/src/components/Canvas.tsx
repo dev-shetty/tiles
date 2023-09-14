@@ -17,7 +17,7 @@ interface Tile {
 export default function Canvas({ socket, color }: CanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  const ROWS = 10
+  const ROWS = 25
   const CANVAS_SIZE = 720
   const [pixelSize] = useState(CANVAS_SIZE / ROWS)
 
