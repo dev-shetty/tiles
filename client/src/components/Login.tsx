@@ -44,7 +44,7 @@ export default function Login() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" onSubmit={loginUser} method="POST">
+          <form className="space-y-4" onSubmit={loginUser} method="POST">
             <div>
               <label
                 htmlFor="email"

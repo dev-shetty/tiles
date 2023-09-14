@@ -3,16 +3,20 @@
 import Logout from "@/components/Logout"
 import { useUser } from "@/provider/UserProvider"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 export default function Navbar() {
   const { user } = useUser()
+  const pathName = usePathname()
   return (
     <nav>
       <div className="absolute w-full flex justify-between items-center px-4 py-4">
-        <Link href="/" className="text-xl font-bold tracking-wider">
-          Tiles
-        </Link>
-        <div>
+        {pathName !== "/" && (
+          <Link href="/" className="text-xl font-bold tracking-wider">
+            Tiles
+          </Link>
+        )}
+        <div className="ml-auto">
           {user ? (
             <div className="flex gap-2 items-center">
               <p>{user.name}</p>
