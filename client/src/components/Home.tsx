@@ -10,6 +10,7 @@ import Link from "next/link"
 
 export default function Home() {
   const [socket, setSocket] = useState<Socket | null>(null)
+  const { user, getUser } = useUser()
 
   const colorsList = [
     "#FF5733",
@@ -21,8 +22,21 @@ export default function Home() {
     "#33FFEC",
     "#33A1FF",
   ]
-
   const [color, setColor] = useState(colorsList[0])
+
+  async function continueAsGuest() {
+    const response = await fetch("http://localhost:5000/api/v1/user/guest", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    const data = await response.json()
+    if (data.success) {
+      sessionStorage.setItem("access_token", data.access_token)
+      getUser(data.access_token)
+    }
+  }
 
   useEffect(() => {
     const accessToken = sessionStorage.getItem("access_token")
@@ -37,16 +51,10 @@ export default function Home() {
       console.log("Connected to Socket.io server")
     })
 
-    socketClient.on("message", (message) => {
-      console.log(message)
-    })
-
     return () => {
       socketClient.close()
     }
   }, [])
-
-  const { user } = useUser()
 
   return (
     <div>
@@ -78,7 +86,10 @@ export default function Home() {
               </Link>
               <div className="flex items-center gap-2">
                 <p>Wanna give it a try?</p>
-                <button className="flex justify-center rounded-md text-indigo-600 px-4 py-1.5 text-sm font-semibold leading-6 hover:text-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                <button
+                  className="flex justify-center rounded-md text-indigo-600 px-4 py-1.5 text-sm font-semibold leading-6 hover:text-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  onClick={continueAsGuest}
+                >
                   Continue as Guest
                 </button>
               </div>

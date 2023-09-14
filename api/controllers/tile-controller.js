@@ -38,7 +38,6 @@ async function placeTile(req, res) {
         },
       })
     }
-    console.log(req.user)
 
     const tile = await Tile.create({
       x: req.body.x,

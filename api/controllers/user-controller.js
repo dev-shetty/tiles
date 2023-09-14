@@ -1,7 +1,11 @@
 const bcrypt = require("bcryptjs")
 const User = require("../models/user-model")
 const { createUserSchema, loginUserSchema } = require("../lib/schemas")
-const { hashPassword, generateToken } = require("../lib/utils")
+const {
+  hashPassword,
+  generateToken,
+  generateRandomNumber,
+} = require("../lib/utils")
 
 // @route - POST /api/v1/user/register
 // @desc - Create a new User
@@ -109,23 +113,6 @@ async function loginUser(req, res) {
   }
 }
 
-// @route - POST /api/v1/user/logout
-// @desc - Log out User
-// @access - Protected
-async function logoutUser(req, res) {
-  // try {
-  //   return res.clearCookie("access_token").status(200).json({
-  //     success: true,
-  //     message: "Logged out successfully!",
-  //   })
-  // } catch (error) {
-  //   return res.status(500).json({
-  //     success: false,
-  //     error: error,
-  //   })
-  // }
-}
-
 // @route - GET /api/v1/user/
 // @desc - Get User Details
 // @access - Protected
@@ -150,9 +137,60 @@ async function getUser(req, res) {
   }
 }
 
+// @route - POST /api/v1/user/guest
+// @desc - Login as Guest
+// @access - Public
+async function loginAsGuest(req, res) {
+  try {
+    // Generating an 8 digit random number
+    const randomNumber = generateRandomNumber(10000000, 99999999)
+
+    const hashedPassword = await hashPassword(randomNumber.toString())
+
+    console.log("Hihsdioasnd")
+
+    const user = await User.create({
+      name: `Guest${randomNumber}`,
+      email: `guest${randomNumber}@tiles.com`,
+      password: hashedPassword,
+    })
+
+    console.log(user)
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Unable to register user. Please try again later!",
+      })
+    }
+
+    const token = generateToken({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+    })
+
+    return res.status(200).json({
+      success: true,
+      message: "User successfully logged in!",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+      access_token: token,
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error,
+    })
+  }
+}
+
 module.exports = {
   createUser,
   loginUser,
-  logoutUser,
   getUser,
+  loginAsGuest,
 }

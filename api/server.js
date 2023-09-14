@@ -47,13 +47,7 @@ io.use(async (socket, next) => {
 }).on("connection", (socket) => {
   console.log("User connected")
 
-  socket.on("message", (message) => {
-    console.log(message)
-    io.emit("message", "Hello from server!")
-  })
-
   socket.on("PLACE_TILE", (tile) => {
-    console.log("PLACE_TILE", tile)
     io.emit("PLACE_TILE", tile)
   })
 
