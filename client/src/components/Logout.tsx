@@ -8,7 +8,7 @@ export default function Logout() {
   async function logoutUser() {
     if (user?.name.startsWith("Guest")) {
       const response = await fetch(
-        `http://localhost:5000/api/v1/user/${user._id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/user/${user._id}`,
         {
           method: "DELETE",
           headers: {

@@ -3,7 +3,6 @@ const dotenv = require("dotenv").config()
 const cors = require("cors")
 const http = require("http")
 const jwt = require("jsonwebtoken")
-const cookieParser = require("cookie-parser")
 const { Server } = require("socket.io")
 
 const connectDB = require("./config/db")
@@ -17,15 +16,13 @@ const io = new Server(httpServer, { cors: { origin: "*" } })
 connectDB()
 
 const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true, // Allow credentials (cookies)
+  origin: ["http://localhost:3000", "https://placetile.vercel.app"],
 }
 
 // middlewares
 app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use(cookieParser())
 
 io.use(async (socket, next) => {
   try {

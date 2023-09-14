@@ -17,13 +17,18 @@ export default function Login() {
       password: formData.get("password"),
     }
 
-    const response = await fetch("http://localhost:5000/api/v1/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(details),
-    })
+    console.log(process.env.NEXT_PUBLIC_SERVER_URL)
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/user/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(details),
+      }
+    )
 
     const data = await response.json()
     if (data.success) {

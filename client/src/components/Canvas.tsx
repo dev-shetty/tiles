@@ -27,7 +27,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
 
   async function placeTile(x: number, y: number) {
     const response = await fetch(
-      "http://localhost:5000/api/v1/tile/place-tile",
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/tile/place-tile`,
       {
         method: "POST",
         headers: {
@@ -46,11 +46,14 @@ export default function Canvas({ socket, color }: CanvasProps) {
   }
 
   async function getAllTiles() {
-    const response = await fetch("http://localhost:5000/api/v1/tile/all", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/tile/all`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
     const data = await response.json()
 
     const _tiles: Tile[] = []
@@ -96,7 +99,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
     socket?.on("PLACE_TILE", (tile: Tile) => {
       setColoredTiles((prev) => [...prev, tile])
     })
-  }, [])
+  }, [getAllTiles])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -111,7 +114,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
     return () => {
       canvas.removeEventListener("click", handleCanvasClick)
     }
-  }, [color])
+  }, [color, onTileClick])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -122,7 +125,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
     coloredTiles.forEach((tile) => {
       createPixel(ctx, tile.x, tile.y, tile.color)
     })
-  }, [coloredTiles])
+  }, [coloredTiles, createPixel])
 
   return (
     <div>

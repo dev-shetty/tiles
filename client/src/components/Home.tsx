@@ -25,12 +25,15 @@ export default function Home() {
   const [color, setColor] = useState(colorsList[0])
 
   async function continueAsGuest() {
-    const response = await fetch("http://localhost:5000/api/v1/user/guest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/user/guest`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
     const data = await response.json()
     if (data.success) {
       sessionStorage.setItem("access_token", data.access_token)
@@ -40,11 +43,14 @@ export default function Home() {
 
   useEffect(() => {
     const accessToken = sessionStorage.getItem("access_token")
-    const socketClient = socketIOClient("http://localhost:5000", {
-      query: {
-        access_token: accessToken ? accessToken : "",
-      },
-    })
+    const socketClient = socketIOClient(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}`,
+      {
+        query: {
+          access_token: accessToken ? accessToken : "",
+        },
+      }
+    )
 
     setSocket(socketClient)
     socketClient.on("connect", () => {

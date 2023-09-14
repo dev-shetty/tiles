@@ -35,11 +35,14 @@ export default function UserProvider({ children }: UserProviderProps) {
   const [user, setUser] = useState<User | null>(null)
 
   async function getUser(access_token?: string) {
-    const response = await fetch("http://localhost:5000/api/v1/user", {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    })
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/user`,
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      }
+    )
     const data = await response.json()
 
     if (data.success) setUser(data.user)
