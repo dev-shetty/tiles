@@ -104,11 +104,9 @@ export default function Canvas({ socket, color }: CanvasProps) {
     if (!canvas) return
 
     const rect = canvas.getBoundingClientRect()
-    console.log(rect)
     if (CANVAS_SIZE !== rect.width) {
       setPixelSize(rect.width / ROWS)
     }
-    console.log(pixelSize)
   }, [])
 
   useEffect(() => {
