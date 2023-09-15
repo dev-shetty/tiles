@@ -65,7 +65,7 @@ export default function Home() {
   return (
     <div>
       {user ? (
-        <div className="flex flex-col gap-2">
+        <div className="pt-20 overflow-auto flex flex-col gap-2">
           <ColorPalette
             setColor={setColor}
             colorsList={colorsList}

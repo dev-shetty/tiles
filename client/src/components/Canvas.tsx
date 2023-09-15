@@ -99,7 +99,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
     socket?.on("PLACE_TILE", (tile: Tile) => {
       setColoredTiles((prev) => [...prev, tile])
     })
-  }, [getAllTiles])
+  }, [])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -114,7 +114,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
     return () => {
       canvas.removeEventListener("click", handleCanvasClick)
     }
-  }, [color, onTileClick])
+  }, [color])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -125,7 +125,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
     coloredTiles.forEach((tile) => {
       createPixel(ctx, tile.x, tile.y, tile.color)
     })
-  }, [coloredTiles, createPixel])
+  }, [coloredTiles])
 
   return (
     <div>

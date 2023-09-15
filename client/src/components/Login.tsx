@@ -17,8 +17,6 @@ export default function Login() {
       password: formData.get("password"),
     }
 
-    console.log(process.env.NEXT_PUBLIC_SERVER_URL)
-
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/user/login`,
       {
