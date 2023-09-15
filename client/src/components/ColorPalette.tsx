@@ -19,7 +19,7 @@ export default function ColorPalette({
             key={clr}
             onClick={() => setColor(clr)}
             style={{ backgroundColor: clr }}
-            className={`cursor-pointer w-[2rem] rounded-full aspect-square ${
+            className={`cursor-pointer w-[1.25rem] md:w-[2rem] rounded-full aspect-square ${
               color === clr && "border-2 border-black"
             }`}
           ></li>

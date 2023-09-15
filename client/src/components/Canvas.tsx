@@ -19,7 +19,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
 
   const ROWS = 25
   const CANVAS_SIZE = 720
-  const [pixelSize] = useState(CANVAS_SIZE / ROWS)
+  const [pixelSize, setPixelSize] = useState(CANVAS_SIZE / ROWS)
 
   // Keeping track of all the colored tiles
   const [coloredTiles, setColoredTiles] = useState<Tile[]>([])
@@ -99,6 +99,16 @@ export default function Canvas({ socket, color }: CanvasProps) {
     socket?.on("PLACE_TILE", (tile: Tile) => {
       setColoredTiles((prev) => [...prev, tile])
     })
+
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const rect = canvas.getBoundingClientRect()
+    console.log(rect)
+    if (CANVAS_SIZE !== rect.width) {
+      setPixelSize(rect.width / ROWS)
+    }
+    console.log(pixelSize)
   }, [])
 
   useEffect(() => {
@@ -131,9 +141,13 @@ export default function Canvas({ socket, color }: CanvasProps) {
     <div>
       <canvas
         ref={canvasRef}
-        width={CANVAS_SIZE}
-        height={CANVAS_SIZE}
-        className="border-2 cursor-pointer"
+        height={pixelSize * ROWS}
+        width={pixelSize * ROWS}
+        className="tile-canvas border-2 cursor-pointer"
+        style={{
+          width: "100%",
+          maxWidth: CANVAS_SIZE,
+        }}
       ></canvas>
     </div>
   )
