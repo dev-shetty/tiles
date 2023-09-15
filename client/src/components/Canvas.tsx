@@ -143,7 +143,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
         ref={canvasRef}
         height={pixelSize * ROWS}
         width={pixelSize * ROWS}
-        className="tile-canvas border-2 cursor-pointer"
+        className="tile-canvas border-2 cursor-pointer bg-white"
         style={{
           width: "100%",
           maxWidth: CANVAS_SIZE,

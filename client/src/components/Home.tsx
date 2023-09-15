@@ -65,13 +65,22 @@ export default function Home() {
   return (
     <div>
       {user ? (
-        <div className="pt-20 overflow-auto flex flex-col gap-2">
-          <ColorPalette
-            setColor={setColor}
-            colorsList={colorsList}
-            color={color}
-          />
-          <Canvas socket={socket} color={color} />
+        <div className="pt-20 overflow-auto">
+          <h1 className="text-xl lg:text-3xl mb-4 text-center font-bold">
+            Place a tile make a{" "}
+            <span className="bg-gradient-to-tr from-[#FFC300] to-[#FF5733] bg-clip-text text-transparent">
+              contribution
+            </span>{" "}
+            to the Canvas
+          </h1>
+          <div className="flex flex-col lg:flex-row gap-2">
+            <ColorPalette
+              setColor={setColor}
+              colorsList={colorsList}
+              color={color}
+            />
+            <Canvas socket={socket} color={color} />
+          </div>
         </div>
       ) : (
         <div className="flex justify-center">

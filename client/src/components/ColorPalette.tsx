@@ -13,7 +13,7 @@ export default function ColorPalette({
 }: ColorPaletteProps) {
   return (
     <div className="mx-auto">
-      <ul className="flex gap-1">
+      <ul className="flex flex-row lg:flex-col gap-1">
         {colorsList.map((clr) => (
           <li
             key={clr}

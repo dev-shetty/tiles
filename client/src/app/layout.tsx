@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-slate-50`}>
+      <body className={`${inter.className} bg-slate-100`}>
         <UserProvider>
           <Navbar />
           <main className="container mx-auto min-h-screen flex items-center justify-center">
