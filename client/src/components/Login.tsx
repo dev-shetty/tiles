@@ -34,7 +34,7 @@ export default function Login() {
 
       // Passing it as parameter because the entry to session storage takes time and a null token is read instead
       getUser!(data.access_token)
-      router.push("/")
+      router.push("/canvas")
     }
   }
   return (

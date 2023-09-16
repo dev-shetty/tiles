@@ -1,9 +1,11 @@
 "use client"
 
 import { useUser } from "@/provider/UserProvider"
+import { useRouter } from "next/navigation"
 
 export default function Logout() {
   const { user, setUser } = useUser()
+  const router = useRouter()
 
   async function logoutUser() {
     if (user?.name.startsWith("Guest")) {
@@ -27,6 +29,7 @@ export default function Logout() {
       sessionStorage.removeItem("access_token")
       setUser!(null)
     }
+    router.push("/")
   }
 
   return (

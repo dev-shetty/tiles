@@ -1,10 +1,10 @@
 "use client"
 
+import useSocket from "@/hooks/useSocket"
 import { useEffect, useRef, useState } from "react"
 import { Socket } from "socket.io-client"
 
 interface CanvasProps {
-  socket: Socket | null
   color: string
 }
 
@@ -14,7 +14,8 @@ interface Tile {
   color: string
 }
 
-export default function Canvas({ socket, color }: CanvasProps) {
+export default function Canvas({ color }: CanvasProps) {
+  const socket = useSocket()
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const ROWS = 25
@@ -41,7 +42,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
     const data = await response.json()
 
     if (data.success) {
-      socket?.emit("PLACE_TILE", { x, y, color })
+      socket.emit("PLACE_TILE", { x, y, color })
     }
   }
 
@@ -96,7 +97,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
   useEffect(() => {
     getAllTiles()
 
-    socket?.on("PLACE_TILE", (tile: Tile) => {
+    socket.on("PLACE_TILE", (tile: Tile) => {
       setColoredTiles((prev) => [...prev, tile])
     })
 
