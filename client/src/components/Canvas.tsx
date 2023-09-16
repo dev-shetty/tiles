@@ -2,6 +2,7 @@
 
 import useSocket from "@/hooks/useSocket"
 import { useEffect, useRef, useState } from "react"
+import { AiOutlineLoading3Quarters } from "react-icons/ai"
 import { Socket } from "socket.io-client"
 
 interface CanvasProps {
@@ -17,6 +18,7 @@ interface Tile {
 export default function Canvas({ color }: CanvasProps) {
   const socket = useSocket()
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [loading, setLoading] = useState(false)
 
   const ROWS = 25
   const CANVAS_SIZE = 720
@@ -47,6 +49,7 @@ export default function Canvas({ color }: CanvasProps) {
   }
 
   async function getAllTiles() {
+    setLoading(true)
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/tile/all`,
       {
@@ -70,6 +73,7 @@ export default function Canvas({ color }: CanvasProps) {
     })
 
     setColoredTiles(_tiles)
+    setLoading(false)
   }
 
   async function createPixel(
@@ -137,7 +141,16 @@ export default function Canvas({ color }: CanvasProps) {
   }, [coloredTiles])
 
   return (
-    <div>
+    <div className="relative">
+      {loading && (
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2">
+          <div className="text-2xl flex gap-2 items-center">
+            <p>Canvas is Loading</p>
+            <AiOutlineLoading3Quarters className="animate-spin" />
+          </div>
+          <p className="text-center">Let's see what art others have created!</p>
+        </div>
+      )}
       <canvas
         ref={canvasRef}
         height={pixelSize * ROWS}
