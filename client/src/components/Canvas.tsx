@@ -1,10 +1,10 @@
 "use client"
 
+import useSocket from "@/hooks/useSocket"
 import { useEffect, useRef, useState } from "react"
-import { Socket } from "socket.io-client"
+import { AiOutlineLoading3Quarters } from "react-icons/ai"
 
 interface CanvasProps {
-  socket: Socket | null
   color: string
 }
 
@@ -14,8 +14,10 @@ interface Tile {
   color: string
 }
 
-export default function Canvas({ socket, color }: CanvasProps) {
+export default function Canvas({ color }: CanvasProps) {
+  const socket = useSocket()
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [loading, setLoading] = useState(false)
 
   const ROWS = 25
   const CANVAS_SIZE = 720
@@ -23,9 +25,9 @@ export default function Canvas({ socket, color }: CanvasProps) {
 
   // Keeping track of all the colored tiles
   const [coloredTiles, setColoredTiles] = useState<Tile[]>([])
-  const token = sessionStorage.getItem("access_token")
 
   async function placeTile(x: number, y: number) {
+    const token = sessionStorage.getItem("access_token")
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/tile/place-tile`,
       {
@@ -46,6 +48,8 @@ export default function Canvas({ socket, color }: CanvasProps) {
   }
 
   async function getAllTiles() {
+    const token = sessionStorage.getItem("access_token")
+    setLoading(true)
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/tile/all`,
       {
@@ -69,6 +73,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
     })
 
     setColoredTiles(_tiles)
+    setLoading(false)
   }
 
   async function createPixel(
@@ -98,6 +103,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
 
     socket?.on("PLACE_TILE", (tile: Tile) => {
       setColoredTiles((prev) => [...prev, tile])
+      console.log(tile)
     })
 
     const canvas = canvasRef.current
@@ -107,7 +113,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
     if (CANVAS_SIZE !== rect.width) {
       setPixelSize(rect.width / ROWS)
     }
-  }, [])
+  }, [socket])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -122,7 +128,7 @@ export default function Canvas({ socket, color }: CanvasProps) {
     return () => {
       canvas.removeEventListener("click", handleCanvasClick)
     }
-  }, [color])
+  }, [color, socket])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -136,7 +142,18 @@ export default function Canvas({ socket, color }: CanvasProps) {
   }, [coloredTiles])
 
   return (
-    <div>
+    <div className="relative">
+      {loading && (
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2">
+          <div className="text-2xl flex gap-2 items-center">
+            <p>Canvas is Loading</p>
+            <AiOutlineLoading3Quarters className="animate-spin" />
+          </div>
+          <p className="text-center">
+            Let&apos;s see what art others have created!
+          </p>
+        </div>
+      )}
       <canvas
         ref={canvasRef}
         height={pixelSize * ROWS}

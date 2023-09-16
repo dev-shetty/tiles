@@ -3,14 +3,20 @@
 import { useUser } from "@/provider/UserProvider"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { FormEvent } from "react"
+import { FormEvent, useState } from "react"
+import { AiOutlineLoading3Quarters } from "react-icons/ai"
 
 export default function Login() {
   const router = useRouter()
   const { getUser } = useUser()
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   async function loginUser(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setError(null)
+    setLoading(true)
+
     const formData = new FormData(e.currentTarget)
     const details = {
       email: formData.get("email"),
@@ -29,13 +35,20 @@ export default function Login() {
     )
 
     const data = await response.json()
+
     if (data.success) {
       sessionStorage.setItem("access_token", data.access_token)
-
-      // Passing it as parameter because the entry to session storage takes time and a null token is read instead
       getUser!(data.access_token)
-      router.push("/")
+      router.push("/canvas")
+    } else {
+      if (data.message !== null) {
+        setError(data.message)
+      } else {
+        setError("Something went wrong")
+      }
     }
+
+    setLoading(false)
   }
   return (
     <>
@@ -88,12 +101,26 @@ export default function Login() {
               </div>
             </div>
 
+            {error !== null ? (
+              <p className="text-red-500 text-center">{error}</p>
+            ) : (
+              ""
+            )}
+
             <div>
               <button
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                disabled={loading}
               >
-                Sign in
+                {loading ? (
+                  <p className="flex items-center gap-2">
+                    Signing In
+                    <AiOutlineLoading3Quarters className="animate-spin" />
+                  </p>
+                ) : (
+                  <p>Sign in</p>
+                )}
               </button>
             </div>
           </form>
