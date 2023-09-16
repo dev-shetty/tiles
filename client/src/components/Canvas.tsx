@@ -25,9 +25,9 @@ export default function Canvas({ color }: CanvasProps) {
 
   // Keeping track of all the colored tiles
   const [coloredTiles, setColoredTiles] = useState<Tile[]>([])
-  const token = sessionStorage.getItem("access_token")
 
   async function placeTile(x: number, y: number) {
+    const token = sessionStorage.getItem("access_token")
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/tile/place-tile`,
       {
@@ -48,6 +48,7 @@ export default function Canvas({ color }: CanvasProps) {
   }
 
   async function getAllTiles() {
+    const token = sessionStorage.getItem("access_token")
     setLoading(true)
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/tile/all`,
