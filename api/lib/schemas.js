@@ -11,7 +11,7 @@ const createUserSchema = z.object({
 const loginUserSchema = z.object({
   body: z.object({
     email: z.string().email(),
-    password: z.string().min(8),
+    password: z.string(),
   }),
 })
 

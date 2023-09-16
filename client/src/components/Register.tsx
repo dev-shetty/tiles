@@ -2,19 +2,30 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { FormEvent } from "react"
+import { FormEvent, useState } from "react"
+import { AiOutlineLoading3Quarters } from "react-icons/ai"
 
 export default function Register() {
   const router = useRouter()
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   async function registerUser(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setError(null)
+    setLoading(true)
 
     const formData = new FormData(e.currentTarget)
     const details = {
       name: formData.get("name"),
       email: formData.get("email"),
       password: formData.get("password"),
+    }
+
+    if (formData.get("password")?.length! <= 8) {
+      setError("Password must be at least 8 characters long")
+      setLoading(false)
+      return
     }
 
     const response = await fetch(
@@ -30,8 +41,17 @@ export default function Register() {
 
     const data = await response.json()
 
-    // TODO: Error Handling
-    if (data.success) router.push("/login")
+    if (data.success) {
+      router.push("/login")
+    } else {
+      if (data.message) {
+        setError(data.message)
+      } else {
+        setError("Something went wrong!")
+      }
+    }
+
+    setLoading(false)
   }
 
   return (
@@ -104,12 +124,26 @@ export default function Register() {
               </div>
             </div>
 
+            {error !== null ? (
+              <p className="text-red-500 text-center">{error}</p>
+            ) : (
+              ""
+            )}
+
             <div>
               <button
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                disabled={loading}
               >
-                Register
+                {loading ? (
+                  <p className="flex items-center gap-2">
+                    Registering
+                    <AiOutlineLoading3Quarters className="animate-spin" />
+                  </p>
+                ) : (
+                  <p>Register</p>
+                )}
               </button>
             </div>
           </form>
