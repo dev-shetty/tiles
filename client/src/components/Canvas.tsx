@@ -3,7 +3,6 @@
 import useSocket from "@/hooks/useSocket"
 import { useEffect, useRef, useState } from "react"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
-import { Socket } from "socket.io-client"
 
 interface CanvasProps {
   color: string
@@ -44,7 +43,7 @@ export default function Canvas({ color }: CanvasProps) {
     const data = await response.json()
 
     if (data.success) {
-      socket.emit("PLACE_TILE", { x, y, color })
+      socket?.emit("PLACE_TILE", { x, y, color })
     }
   }
 
@@ -101,7 +100,7 @@ export default function Canvas({ color }: CanvasProps) {
   useEffect(() => {
     getAllTiles()
 
-    socket.on("PLACE_TILE", (tile: Tile) => {
+    socket?.on("PLACE_TILE", (tile: Tile) => {
       setColoredTiles((prev) => [...prev, tile])
     })
 
@@ -112,7 +111,7 @@ export default function Canvas({ color }: CanvasProps) {
     if (CANVAS_SIZE !== rect.width) {
       setPixelSize(rect.width / ROWS)
     }
-  }, [])
+  }, [socket])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -148,7 +147,9 @@ export default function Canvas({ color }: CanvasProps) {
             <p>Canvas is Loading</p>
             <AiOutlineLoading3Quarters className="animate-spin" />
           </div>
-          <p className="text-center">Let's see what art others have created!</p>
+          <p className="text-center">
+            Let&apos;s see what art others have created!
+          </p>
         </div>
       )}
       <canvas

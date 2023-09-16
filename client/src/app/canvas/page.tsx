@@ -4,7 +4,7 @@ import Canvas from "@/components/Canvas"
 import ColorPalette from "@/components/ColorPalette"
 import { useState } from "react"
 
-export default function page() {
+export default function CanvasPage() {
   const colorsList = [
     "#FF5733",
     "#FFC300",
