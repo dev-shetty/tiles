@@ -102,6 +102,7 @@ export default function Canvas({ color }: CanvasProps) {
 
     socket?.on("PLACE_TILE", (tile: Tile) => {
       setColoredTiles((prev) => [...prev, tile])
+      console.log(tile)
     })
 
     const canvas = canvasRef.current
@@ -126,7 +127,7 @@ export default function Canvas({ color }: CanvasProps) {
     return () => {
       canvas.removeEventListener("click", handleCanvasClick)
     }
-  }, [color])
+  }, [color, socket])
 
   useEffect(() => {
     const canvas = canvasRef.current
