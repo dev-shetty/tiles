@@ -1,6 +1,8 @@
 "use client"
 
 import useSocket from "@/hooks/useSocket"
+import { useUser } from "@/provider/UserProvider"
+import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 
@@ -25,6 +27,7 @@ export default function Canvas({ color }: CanvasProps) {
 
   // Keeping track of all the colored tiles
   const [coloredTiles, setColoredTiles] = useState<Tile[]>([])
+  const { user } = useUser()
 
   async function placeTile(x: number, y: number) {
     const token = sessionStorage.getItem("access_token")
@@ -49,6 +52,7 @@ export default function Canvas({ color }: CanvasProps) {
 
   async function getAllTiles() {
     const token = sessionStorage.getItem("access_token")
+    if (!token) return
     setLoading(true)
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v1/tile/all`,
@@ -151,6 +155,23 @@ export default function Canvas({ color }: CanvasProps) {
           </div>
           <p className="text-center">
             Let&apos;s see what art others have created!
+          </p>
+        </div>
+      )}
+      {!user && (
+        <div className="bg-slate-50 p-8 rounded-lg absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2">
+          <div className="text-md lg:text-2xl flex gap-2 items-center">
+            <p className="text-center mb-2">
+              The canvas is only visible to the people who login
+            </p>
+          </div>
+          <p className="text-center">
+            <Link
+              href="/login"
+              className="flex w-full justify-center rounded-md bg-indigo-600 px-4 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Login to Continue
+            </Link>
           </p>
         </div>
       )}
