@@ -16,7 +16,11 @@ const io = new Server(httpServer, { cors: { origin: "*" } })
 connectDB()
 
 const corsOptions = {
-  origin: ["http://localhost:3000", "https://placetile.vercel.app"],
+  origin: [
+    "http://localhost:3000",
+    "https://placetile.vercel.app",
+    "https://tiles.dev.shetty.me",
+  ],
 }
 
 // middlewares
