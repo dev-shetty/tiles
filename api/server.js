@@ -19,7 +19,7 @@ const corsOptions = {
   origin: [
     "http://localhost:3000",
     "https://placetile.vercel.app",
-    "https://tiles.dev.shetty.me",
+    "https://tiles.shetty.me",
   ],
 }
 
